@@ -1,4 +1,4 @@
-name=test
+name=hello
 version=1.0
 SHELL=/bin/bash
 PREFIX=/usr
