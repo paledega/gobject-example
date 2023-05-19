@@ -4,16 +4,15 @@ SHELL=/bin/bash
 PREFIX=/usr
 DESTDIR=/
 LIBDIR=/lib
-links="-lglib-2.0"
 build: clean
 	mkdir -p build
 	cd build ; valac -C `find ../src -type f -iname *.vala` --gir=$(name)-$(version).gir \
 	    --library=$(name)  \
 	    -H lib$(name).h
 	for obj in `find . -type f -iname *.c` ; do \
-	    $(CC) $(CFLAGS) -c $$obj -o $${obj/.c/.o} -fPIC;\
+	    $(CC) $(CFLAGS) `pkg-config --cflags glib-2.0` -c $$obj -o $${obj/.c/.o} -fPIC;\
 	done
-	cd build; $(CC) $(CFLAGS) `find . -type f -iname *.o` $(links) -shared -o lib$(name).so
+	cd build; $(CC) $(CFLAGS) `find . -type f -iname *.o` `pkg-config --libs glib-2.0` -shared -o lib$(name).so
 	g-ir-compiler build/$(name)-$(version).gir --shared-library=lib$(name) --output=build/$(name)-$(version).typelib
 install:
 	mkdir -p $(DESTDIR)/$(PREFIX)/$(LIBDIR)/girepository-1.0/
